@@ -182,7 +182,7 @@ function elgg_releases_page_handler($pages) {
 			$version = elgg_extract(1, $pages);
 			$release = ElggRelease::getReleaseFromVersion($version);
 
-			if (!elgg_instanceof($release, 'object', 'elgg_release') || !$release->canEdit()) {
+			if (!elgg_instanceof($release, 'object', 'elgg_release')) {
 				register_error("Unknown release");
 				forward(REFERRER, 404);
 			}

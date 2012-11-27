@@ -67,7 +67,6 @@ class ElggRelease extends ElggFile {
 	}
 
 	public function setPackagePath($path) {
-		$path = sanitise_filepath($path);
 		return $this->package_path = $path;
 	}
 
