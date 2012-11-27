@@ -32,6 +32,20 @@ function elgg_releases_init() {
 
 	// menu modifications
 	elgg_register_plugin_hook_handler('register', 'menu:entity', 'elgg_releases_remove_access');
+
+	$release_branches = array(
+		'1.0', '1.1', '1.2', '1.3', '1.5', '1.6', '1.7', '1.8', 'nightlies'
+	);
+
+	foreach ($release_branches as $branch) {
+		$item = ElggMenuItem::factory(array(
+			'name' => $branch,
+			'text' => "Elgg $branch",
+			'href' => "/releases/list/$branch"
+		));
+
+		elgg_register_menu_item('page', $item);
+	}
 }
 
 /**

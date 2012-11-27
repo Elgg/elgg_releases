@@ -6,13 +6,11 @@
 $release = ElggRelease::getReleaseFromVersion(get_input('version'));
 
 if (!elgg_instanceof($release, 'object', 'elgg_release')) {
-	register_error(elgg_echo('noaccess'));
-	$_SESSION['last_forward_from'] = current_page_url();
-	forward('');
+	forward('', 404);
 }
 
 $branch = $release->getReleaseBranch();
-elgg_push_breadcrumb("Elgg $branch", "/release/list/$branch");
+elgg_push_breadcrumb("Elgg $branch", "/releases/list/$branch");
 
 $title = $release->title;
 elgg_push_breadcrumb($title);

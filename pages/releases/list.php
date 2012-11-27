@@ -24,7 +24,7 @@ if (!$content) {
 
 $title = "Elgg $version Releases";
 
-$body = elgg_view_layout('one_column', array(
+$body = elgg_view_layout('content', array(
 	'filter' => false,
 	'content' => $content,
 	'title' => $title,

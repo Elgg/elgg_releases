@@ -3,7 +3,7 @@
  * Save a release
  */
 
-elgg_make_sticky_form('release');
+elgg_make_sticky_form('elgg_release');
 
 $error = FALSE;
 $error_forward_url = REFERER;
@@ -59,11 +59,16 @@ foreach ($values as $name => $value) {
 
 if ($values['build_package']) {
 	if (!$release->package()) {
-		register_error("Could not build package.");
+		register_error("Could not build package. Check that the version is tagged in GitHub.");
 		forward(REFERER);
 	}
 } elseif ($values['package_path']) {
-	$release->setPackagePath($values['package_path']);
+	$path = sanitise_filepath($values['package_path'], false);
+	if (!file_exists($path)) {
+		register_error("Package path is invalid or inaccessible.");
+		forward(REFERER);
+	}
+	$release->setPackagePath($path);
 }
 
 if ($release->save()) {
