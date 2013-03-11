@@ -41,7 +41,8 @@ function elgg_releases_init() {
 		$item = ElggMenuItem::factory(array(
 			'name' => $branch,
 			'text' => "Elgg $branch",
-			'href' => "/releases/list/$branch"
+			'href' => "/releases/list/$branch",
+			'context' => 'releases'
 		));
 
 		elgg_register_menu_item('page', $item);
