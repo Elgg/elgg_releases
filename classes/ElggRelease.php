@@ -100,7 +100,7 @@ class ElggRelease extends ElggFile {
 		$version = $this->getVersion();
 		return "/releases/view/$version";
 	}
-
+	
 	/**
 	 * Return an ElggRelease object by its version.
 	 *
@@ -135,5 +135,27 @@ class ElggRelease extends ElggFile {
 			return $matches[0];
 		}
 		return false;
+	}
+
+	/**
+	 * Return the most recently added release for a branch.
+	 *
+	 * @note This is _most recently added_ to the database. It doesn't check the version itself.
+	 * If you release 1.8.17 and then release 1.8.16 you're a bad person.
+	 *
+	 * @param string $branch
+	 */
+	public static function getLatestReleaseFromBranch($branch) {
+		$options = array(
+			'type' => 'object',
+			'subtype' => 'elgg_release',
+			'metadata_name' => 'release_branch',
+			'metadata_value' => $branch
+		);
+
+		$releases = elgg_get_entities_from_metadata($options);
+		if ($releases) {
+			return $releases[0];
+		}
 	}
 }
