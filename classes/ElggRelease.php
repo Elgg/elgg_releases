@@ -48,8 +48,8 @@ class ElggRelease extends ElggFile {
 			return false;
 		}
 
-		$scripts_dir = elgg_get_plugin_setting('elgg_scripts_path', 'elgg_org_theme');
-		$output_dir = elgg_get_plugin_setting('build_output_dir', 'elgg_org_theme');
+		$scripts_dir = elgg_get_plugin_setting('elgg_scripts_path', 'elgg_releases');
+		$output_dir = elgg_get_plugin_setting('build_output_dir', 'elgg_releases');
 		$cmd = "{$scripts_dir}build/build.sh $version $version $output_dir";
 		
 		exec($cmd, $cmd_output, $cmd_return);
