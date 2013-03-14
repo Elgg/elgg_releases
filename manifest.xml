@@ -5,8 +5,9 @@
 	<version>1.8</version>
 	<description>Elgg.org Release Management</description>
 	<website>http://www.elgg.org/</website>
-	<copyright>Elgg core developers 2012</copyright>
+	<copyright>Elgg core developers 2012-2013</copyright>
 	<licence>GNU Public License version 2</licence>
+	<category>elgg.org</category>
 
    	<requires>
 		<type>elgg_release</type>
