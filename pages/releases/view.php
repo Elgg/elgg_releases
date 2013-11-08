@@ -18,7 +18,7 @@ elgg_push_breadcrumb($title);
 elgg_register_menu_item('title', array(
 	'name' => 'download',
 	'text' => 'Download',
-	'href' => "releases/download/{$release->getVersion()}",
+	'href' => $release->getDownloadURL(),
 	'link_class' => 'elgg-button elgg-button-action',
 ));
 

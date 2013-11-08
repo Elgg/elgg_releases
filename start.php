@@ -31,7 +31,7 @@ function elgg_releases_init() {
 	elgg_register_page_handler('github', 'elgg_releases_github_webhook');
 
 	// menu modifications
-	elgg_register_plugin_hook_handler('register', 'menu:entity', 'elgg_releases_remove_access');
+	elgg_register_plugin_hook_handler('register', 'menu:entity', 'elgg_release_setup_entity_menu');
 
 	$release_branches = array(
 		'1.0', '1.1', '1.2', '1.3', '1.5', '1.6', '1.7', '1.8', 'nightlies'
@@ -51,17 +51,22 @@ function elgg_releases_init() {
 
 /**
  * Remove the access level from the entity menu if not logged in.
+ * Add "Download" link
  */
-function elgg_releases_remove_access($hook, $type, $value, $params) {
-	if (elgg_is_logged_in()) {
+function elgg_release_setup_entity_menu($hook, $type, $value, $params) {
+	if (!$params['entity'] instanceof ElggRelease) {
 		return $value;
 	}
-	
-	foreach ($value as $i => $item) {
-		if ($item->getName() == 'access') {
-			unset($value[$i]);
+
+	if (!elgg_is_logged_in()) {
+		foreach ($value as $i => $item) {
+			if ($item->getName() == 'access') {
+				unset($value[$i]);
+			}
 		}
 	}
+
+	$value[] = new ElggMenuItem('download', 'Download', $params['entity']->getDownloadURL());
 
 	return $value;
 }

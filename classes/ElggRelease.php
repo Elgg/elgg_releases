@@ -100,6 +100,19 @@ class ElggRelease extends ElggFile {
 		$version = $this->getVersion();
 		return "/releases/view/$version";
 	}
+
+	/**
+	 * Get the download URL for this release
+	 *
+	 * @return string
+	 */
+	public function getDownloadURL() {
+		if (!$this->guid) {
+			return false;
+		}
+
+		return "/releases/download/{$this->getVersion()}";
+	}
 	
 	/**
 	 * Return an ElggRelease object by its version.
