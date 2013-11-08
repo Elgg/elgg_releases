@@ -43,15 +43,16 @@ foreach ($values as $name => $default) {
 	$values[$name] = $value;
 }
 
+if ($error) {
+	register_error($error);
+	forward(REFERER);
+}
+
 // need either build path or to repackage
 if (!$values['build_package'] && !$values['package_path']) {
 	$error = "Need to either build the package or to specify the package path.";
 }
 
-if ($error) {
-	register_error($error);
-	forward(REFERER);
-}
 
 foreach ($values as $name => $value) {
 	$release->$name = $value;

@@ -13,7 +13,7 @@
  *			Callback URL
  *			Annotation format
  *
- * Remove activity page handler
+ *
  */
 
 elgg_register_event_handler('init', 'system', 'elgg_releases_init');
@@ -74,7 +74,16 @@ function elgg_releases_remove_access($hook, $type, $value, $params) {
  */
 function elgg_releases_github_webhook($page) {
 	// @todo add check for IP address!!!!
-	// 207.97.227.253, 50.57.128.197, 108.171.174.178.
+//	 207.97.227.253, 50.57.128.197, 108.171.174.178.
+	$gh_ips = array(
+		'207.97.227.253',
+		'50.57.128.197',
+		'108.171.174.178'
+	);
+	
+	if (!in_array($_SERVER['REMOTE_ADDR'], $gh_ips)) {
+		exit;
+	}
 
 	$payload = elgg_extract('payload', $_POST);
 	$payload = json_decode($payload);
