@@ -28,7 +28,10 @@ function elgg_releases_init() {
 	elgg_register_page_handler('releases', 'elgg_releases_page_handler');
 
 	// github web hook
-	elgg_register_page_handler('github', 'elgg_releases_github_webhook');
+	$endpoint = elgg_get_plugin_setting('github_endpoint', 'elgg_releases');
+	if ($endpoint) {
+		elgg_register_page_handler($endpoint, 'elgg_releases_github_webhook');
+	}
 
 	// menu modifications
 	elgg_register_plugin_hook_handler('register', 'menu:entity', 'elgg_release_setup_entity_menu');
@@ -93,8 +96,14 @@ function elgg_releases_github_webhook($page) {
 		'50.57.128.197',
 		'108.171.174.178'
 	);
-	
+
+	if (elgg_extract('REQUEST_METHOD', $_SERVER) !== 'POST') {
+		header('HTTP/1.1 405 Method Not Allowed');
+		exit;
+	}
+
 	if (!in_array($_SERVER['REMOTE_ADDR'], $gh_ips)) {
+		header('HTTP/1.1 403 Forbidden');
 		exit;
 	}
 

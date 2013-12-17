@@ -25,6 +25,18 @@ $plugin = elgg_extract('entity', $vars);
 		'value' => $plugin->build_output_dir,
 	));
 ?>
+
+<label>Endpoint for GitHub API to POST to:</label>
+<span class="elgg-text-help">
+	Use as <?php echo elgg_get_config('site')->url; ?>&lt;endpoint&gt; Keep it as a secret to avoid
+	spoofed IP addresses from being able to build packages.
+</span>
+<?php
+	echo elgg_view('input/text', array(
+		'name' => 'params[github_endpoint]',
+		'value' => $plugin->github_endpoint,
+	));
+?>
 </fieldset>
 
 <br />
