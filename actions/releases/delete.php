@@ -18,4 +18,4 @@ if ($release->delete()) {
 	system_message("Deleted release.");
 }
 
-forward(REFERRER);
+forward('releases/');
