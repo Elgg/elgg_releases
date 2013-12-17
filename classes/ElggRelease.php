@@ -45,24 +45,25 @@ class ElggRelease extends ElggFile {
 		// have to know what version this is to build it.
 		$version = $this->getVersion();
 		if (!$version) {
-			return false;
+			throw new UnexpectedValueException("Invalid Elgg version '$version'.");
 		}
 
 		$scripts_dir = elgg_get_plugin_setting('elgg_scripts_path', 'elgg_releases');
 		$output_dir = elgg_get_plugin_setting('build_output_dir', 'elgg_releases');
 		$cmd = "{$scripts_dir}build/build.sh $version $version $output_dir";
-		
+
+		$cmd_output = $cmd_return = null;
+
 		exec($cmd, $cmd_output, $cmd_return);
 		
 		if ($cmd_return === 0) {
 			// save the path
 			$this->setFilename("elgg-$version.zip");
 			$this->package_path = $output_dir . "/elgg-$version.zip";
-			$t = new ElggFile();
 			return true;
 		} else {
-			elgg_log("ElggPackage build failed: $cmd_output");
-			return false;
+			$output = implode("\n", $cmd_output);
+			throw new UnexpectedValueException($output);
 		}
 	}
 

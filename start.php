@@ -34,7 +34,7 @@ function elgg_releases_init() {
 	elgg_register_plugin_hook_handler('register', 'menu:entity', 'elgg_release_setup_entity_menu');
 
 	$release_branches = array(
-		'1.0', '1.1', '1.2', '1.3', '1.5', '1.6', '1.7', '1.8', 'nightlies'
+		'1.0', '1.1', '1.2', '1.3', '1.5', '1.6', '1.7', '1.8'
 	);
 
 	foreach ($release_branches as $branch) {
@@ -47,6 +47,15 @@ function elgg_releases_init() {
 
 		elgg_register_menu_item('page', $item);
 	}
+
+	$item = ElggMenuItem::factory(array(
+		'name' => "github",
+		'text' => "GitHub",
+		'href' => "http://github.com/elgg/elgg",
+		'context' => 'releases'
+	));
+
+	elgg_register_menu_item('page', $item);
 }
 
 /**
@@ -78,8 +87,7 @@ function elgg_release_setup_entity_menu($hook, $type, $value, $params) {
  * @param type $page
  */
 function elgg_releases_github_webhook($page) {
-	// @todo add check for IP address!!!!
-//	 207.97.227.253, 50.57.128.197, 108.171.174.178.
+
 	$gh_ips = array(
 		'207.97.227.253',
 		'50.57.128.197',
@@ -112,8 +120,6 @@ function elgg_releases_github_webhook($page) {
 	$repo_owner = $payload->repository->owner->name;
 
 	$sha = $payload->after;
-	$owner = elgg_get_plugin_setting('github_repo_owner', 'elgg_org_theme');
-	$repo = elgg_get_plugin_setting('github_repo_owner', 'elgg_org_theme');
 	$url = "https://api.github.com/repos/$repo_owner/$repo_name/git/tags/$sha";
 	$json = file_get_contents($url);
 	$response = json_decode($json);
@@ -151,7 +157,9 @@ function elgg_releases_github_webhook($page) {
 		));
 		
 		elgg_add_admin_notice("build_{$sha}", "Build for $link ($sha) completed on " . date('Y-m-d H:i:s') . '.');
+		elgg_set_ignore_access($ia);
 	} else {
+		elgg_set_ignore_access($ia);
 		elgg_add_admin_notice("save_{$sha}_failed", "Object save for version $version ($sha) failed.");
 		return true;
 	}
@@ -202,7 +210,8 @@ function elgg_releases_page_handler($pages) {
 			}
 			
 			set_input('version', $version);
-
+			// fall through
+			
 		case 'add':
 			include "$pages_dir/edit.php";
 			break;

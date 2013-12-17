@@ -36,7 +36,7 @@ foreach ($values as $name => $default) {
 	$value = get_input($name, $default);
 
 	if (in_array($name, $required) && empty($value)) {
-		$error = "$name cannot be empty.";
+		$error = ucwords($name) . " cannot be empty.";
 		break;
 	}
 	
@@ -59,8 +59,10 @@ foreach ($values as $name => $value) {
 }
 
 if ($values['build_package']) {
-	if (!$release->package()) {
-		register_error("Could not build package. Check that the version is tagged in GitHub.");
+	try {
+		$release->package();
+	} catch (UnexpectedValueException $e) {		
+		register_error("Could not build package: {$e->getMessage()}");
 		forward(REFERER);
 	}
 } elseif ($values['package_path']) {
