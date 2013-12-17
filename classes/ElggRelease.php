@@ -59,7 +59,7 @@ class ElggRelease extends ElggFile {
 		if ($cmd_return === 0) {
 			// save the path
 			$this->setFilename("elgg-$version.zip");
-			$this->package_path = $output_dir . "/elgg-$version.zip";
+			$this->package_path = $output_dir . "elgg-$version.zip";
 			return true;
 		} else {
 			$output = implode("\n", $cmd_output);
@@ -131,7 +131,7 @@ class ElggRelease extends ElggFile {
 
 		$releases = elgg_get_entities_from_metadata($options);
 		if ($releases) {
-			return $releases[0];
+			return array_pop($releases);
 		}
 
 		return false;
