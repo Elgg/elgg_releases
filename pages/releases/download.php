@@ -18,5 +18,7 @@ header("Content-Disposition: attachment; filename=\"$filename\"");
 
 ob_clean();
 flush();
-//readfile($file->getFilenameOnFilestore());
+
+$release->incrementDownloadCount();
+
 readfile($release->getPackagePath());

@@ -22,6 +22,8 @@ class ElggRelease extends ElggFile {
 			return false;
 		}
 
+		$this->setDownloadCount(0);
+
 		return parent::save();
 	}
 
@@ -113,6 +115,45 @@ class ElggRelease extends ElggFile {
 		}
 
 		return "/releases/download/{$this->getVersion()}";
+	}
+
+	/**
+	 * Returns the download count
+	 *
+	 * @note This uses private settings so we can easily use atomic queries to
+	 * increment / set the count. You'll run into problems if you try to use
+	 * MD to do something like this.
+	 *
+	 * @return int
+	 */
+	public function countDownloads() {
+		return $this->getPrivateSetting('download_count');
+	}
+
+	/**
+	 * Sets the download count
+	 *
+	 * @return bool
+	 */
+	public function setDownloadCount($count) {
+		$count = sanitize_int($count);
+		return $this->setPrivateSetting('download_count', $count);
+	}
+
+	/**
+	 * Increments the download count
+	 *
+	 * @return bool
+	 */
+	public function incrementDownloadCount() {
+		// this needs to be an atomic op
+		$prefix = elgg_get_config('dbprefix');
+		
+		$q = "UPDATE {$prefix}private_settings "
+			. "SET value = value + 1 "
+			. "WHERE entity_guid = $this->guid AND name = 'download_count'";
+
+		return update_data($q);
 	}
 	
 	/**
