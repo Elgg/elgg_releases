@@ -26,10 +26,67 @@ function curl($url) {
 	curl_setopt($ch, CURLOPT_USERAGENT, 'Elgg');
 	// use this to avoid the 60 requests per hour (or so) rate limit.
 //	curl_setopt($ch, CURLOPT_USERPWD, "username:password");
+
 	$response = curl_exec($ch);
 	curl_close($ch);
 
 	return $response;
+}
+
+function get_changes($version) {
+	if (!$version) {
+		return '';
+	}
+
+	static $changes = array();
+
+	if ($changes) {
+		return elgg_extract($version, $changes, '');
+	}
+
+	$changes_18 = read_change_file('../../CHANGES.txt', 'Version 1.8.');
+	$changes_17 = read_change_file('CHANGES.txt', 'Version 1.7.');
+
+	$changes = array_merge($changes_18, $changes_17);
+
+	return elgg_extract($version, $changes, '');
+}
+
+function read_change_file($file, $version_delim = 'Version 1.8.') {
+	$changes_file = file($file);
+
+	if (!$changes_file) {
+		return false;
+	}
+
+	$current_version = null;
+	$current_changes = '';
+
+	for ($i = 0; $i < count($changes_file); $i++) {
+		$line = $changes_file[$i];
+
+		if (strstr($line, $version_delim)) {
+			if ($current_changes && $current_version) {
+				$changes[$current_version] = trim($current_changes);
+				$current_changes = '';
+			}
+
+			$current_version = trim(str_replace('Version', '', $line));
+			if ($current_version == '1.8.0 (Jackie)') {
+				$current_version = '1.8.0';
+			}
+			continue;
+		}
+
+		if (!strstr($line, 'from http')) {
+			$current_changes .= $line;
+		}
+	}
+
+	// append last version
+	$changes[$current_version] = trim($current_changes);
+
+	return $changes;
 }
 
 $response = curl('https://api.github.com/repos/elgg/elgg/tags');
@@ -52,7 +109,11 @@ foreach ($tags as $info) {
 		continue;
 	}
 	$release->title = 'Elgg ' . $info->name;
-	$release->description = "Update This";
+	$changes = get_changes($info->name);
+	if (!$changes) {
+		$changes = 'CHANGE THIS.';
+	}
+	$release->description = $changes;
 	$release->owner_guid = 40;
 	$release->access_id = ACCESS_PUBLIC;
 
